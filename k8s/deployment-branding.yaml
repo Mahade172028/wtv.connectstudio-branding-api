@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shar-branding-deployment
+  namespace: sharestudio-dev
+
+spec:
+  selector:
+    matchLabels:
+      app: shar-branding-svc-pod
+
+  template:
+    metadata:
+      labels:
+        app: shar-branding-svc-pod
+    spec:
+      containers:
+        - name: branding-svc
+          image: wtvglobalproductdevelopment/shar-branding-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: brandinghttpport
+
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  key: MONGO_URI
+                  name: secret-mongodb
+
